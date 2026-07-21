@@ -44,12 +44,12 @@ export const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
-        console.error(error);
+  console.error(error);
 
-    res.status(500).json({
-        success: false,
-        message: "Internal Server Error",
-    });
+  return res.status(500).json({
+    success: false,
+    message: "Internal Server Error",
+  });
 }
 };
 
@@ -100,9 +100,18 @@ export const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+  console.error(error);
+
+  return res.status(500).json({
+    success: false,
+    message: "Internal Server Error",
+  });
+}
+};
+
+export const getCurrentUser = async (req, res) => {
+  res.status(200).json({
+    success: true,
+    user: req.user,
+  });
 };
