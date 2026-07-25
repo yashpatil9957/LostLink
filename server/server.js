@@ -1,12 +1,11 @@
+import "dotenv/config";
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
+
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import lostItemRoutes from "./routes/lostItemRoutes.js";
 import foundItemRoutes from "./routes/foundItemRoutes.js";
-
-dotenv.config();
 
 connectDB();
 

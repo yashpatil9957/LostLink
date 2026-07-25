@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import LostItem from "../models/LostItem.js";
+import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 
 export const createLostItem = async (req, res) => {
   try {
@@ -8,7 +9,7 @@ export const createLostItem = async (req, res) => {
       description,
       category,
       location,
-      dateLost,
+      datelost,
       reward,
     } = req.body;
 
@@ -18,7 +19,7 @@ export const createLostItem = async (req, res) => {
       !description ||
       !category ||
       !location ||
-      !dateLost
+      !datelost
     ) {
       return res.status(400).json({
         success: false,
@@ -26,12 +27,25 @@ export const createLostItem = async (req, res) => {
       });
     }
 
+    let imageUrl = null;
+
+    // Upload image to Cloudinary if provided
+    if (req.file) {
+      const result = await uploadToCloudinary(
+        req.file.buffer,
+        "lost-items"
+      );
+
+      imageUrl = result.secure_url;
+    }
+
     const lostItem = await LostItem.create({
         title,
         description,
+        image: imageUrl,
         category,
         location,
-        dateLost,
+        datelost,
         reward,
         owner: req.user._id,
     });
@@ -134,13 +148,29 @@ export const updateLostItem = async (req, res) => {
       });
     }
 
+    let imageUrl = lostItem.image;
+
+    // Upload new image if provided
+    if (req.file) {
+      const result = await uploadToCloudinary(
+        req.file.buffer,
+        "lost-items"
+      );
+
+      imageUrl = result.secure_url;
+    }
+
+    //Update lost item
     const updatedLostItem = await LostItem.findByIdAndUpdate(
-    id,
-    req.body,
-        {
-            new: true,
-            runValidators: true,
-        }
+      id,
+      {
+        ...req.body,
+        image: imageUrl,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
     );
 
     return res.status(200).json({
