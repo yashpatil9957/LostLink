@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import FoundItem from "../models/FoundItem.js";
+import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 
 export const createFoundItem = async (req, res) => {
   try {
@@ -25,10 +26,22 @@ export const createFoundItem = async (req, res) => {
       });
     }
 
+    let imageUrl = "";
+
+    if (req.file) {
+    const result = await uploadToCloudinary(
+      req.file.buffer,
+      "found-items"
+    );
+
+    imageUrl = result.secure_url;
+  }
+
     // Create found item
     const foundItem = await FoundItem.create({
       title,
       description,
+      image: imageUrl,
       category,
       location,
       dateFound,
@@ -137,10 +150,25 @@ export const updateFoundItem = async (req, res) => {
       });
     }
 
+    let imageUrl = foundItem.image;
+
+    //upload new image if provided
+    if (req.file) {
+      const result = await uploadToCloudinary(
+        req.file.buffer,
+        "found-items"
+      );
+
+      imageUrl = result.secure_url;
+    }
+
     // Update found item
     const updatedFoundItem = await FoundItem.findByIdAndUpdate(
       id,
-      req.body,
+      {
+        ...req.body,
+        image: imageUrl,
+      },    
       {
         new: true,
         runValidators: true,

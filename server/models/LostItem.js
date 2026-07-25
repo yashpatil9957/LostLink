@@ -14,6 +14,12 @@ const lostItemSchema = new mongoose.Schema(
         trim: true,
         maxlength: [500, "Description cannot exceed 500 characters"],
     },
+
+    image: {
+        type: String,
+        default: "",
+    },
+
     category: {
         type: String,
         required: [true, "Category is required"],
@@ -45,7 +51,7 @@ const lostItemSchema = new mongoose.Schema(
         trim: true,
         maxlength: [150, "Location cannot exceed 150 characters"],
     },
-    dateLost: {
+    datelost: {
         type: Date,
         required: [true, "Date lost is required"],
     },

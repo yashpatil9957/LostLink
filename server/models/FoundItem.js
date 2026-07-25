@@ -16,6 +16,11 @@ const foundItemSchema = new mongoose.Schema(
       maxlength: [500, "Description cannot exceed 500 characters"],
     },
 
+    image: {
+      type: String,
+      default: "",
+  },
+
     category: {
       type: String,
       required: [true, "Category is required"],
