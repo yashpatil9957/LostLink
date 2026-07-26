@@ -7,6 +7,7 @@ import authRoutes from "./routes/authRoutes.js";
 import lostItemRoutes from "./routes/lostItemRoutes.js";
 import foundItemRoutes from "./routes/foundItemRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+import claimRequestRoutes from "./routes/claimRequestRoutes.js";
 
 connectDB();
 
@@ -19,6 +20,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/lost-items", lostItemRoutes);
 app.use("/api/found-items", foundItemRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/claims", claimRequestRoutes);
 
 app.get("/", (req, res) => {
   res.send("LostLink API is running 🚀");
