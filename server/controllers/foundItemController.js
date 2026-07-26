@@ -65,10 +65,71 @@ export const createFoundItem = async (req, res) => {
 
 export const getAllFoundItems = async (req, res) => {
   try {
-    const foundItems = await FoundItem.find();
+    const {
+      search,
+      category,
+      status,
+      sort,
+      page = 1,
+      limit = 10,
+    } = req.query;
+
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+
+    let query = {};
+
+    const skip = (pageNumber - 1) * limitNumber;
+
+    if (search) {
+      query.$or = [
+        {
+          title: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        {
+          description: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        {
+          category: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+      ];
+    }
+
+    if (category) {
+      query.category = category;
+    }
+    if (status) {
+      query.status = status;
+    }
+
+    let sortOption = { createdAt: -1 };
+    if (sort === "oldest") {
+      sortOption = { createdAt: 1 };
+    }
+
+    const totalItems = await FoundItem.countDocuments(query);
+    const totalPages = Math.ceil(totalItems / limitNumber);
+
+    const foundItems = await FoundItem.find(query)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limitNumber);
 
     return res.status(200).json({
       success: true,
+      page: pageNumber,
+      limit: limitNumber,
+      totalItems,
+      totalPages,
       count: foundItems.length,
       foundItems,
     });
