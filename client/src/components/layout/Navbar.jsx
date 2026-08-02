@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const navLinks = [
   { name: "Home", href: "#" },
@@ -10,14 +12,25 @@ const navLinks = [
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-      <nav className="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-8 py-4">
-        
+    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-md">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
+
         {/* Logo */}
-        <a href="#" className="font-heading text-3xl font-bold text-blue-600">
+        <Link
+          to="/"
+          className="font-heading text-3xl font-bold text-blue-600"
+        >
           LostLink
-        </a>
+        </Link>
 
         {/* Desktop Navigation */}
         <ul className="hidden md:flex items-center gap-8">
@@ -35,13 +48,41 @@ function Navbar() {
 
         {/* Desktop Buttons */}
         <div className="hidden md:flex items-center gap-3">
-          <button className="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-600 font-medium transition hover:bg-blue-50">
-            Login
-          </button>
 
-          <button className="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium shadow-md transition hover:bg-blue-700 hover:shadow-lg">
-            Register
-          </button>
+          {!user ? (
+            <>
+              <button
+                onClick={() => navigate("/login")}
+                className="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-600 font-medium transition hover:bg-blue-50"
+              >
+                Login
+              </button>
+
+              <button
+                onClick={() => navigate("/register")}
+                className="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium shadow-md transition hover:bg-blue-700 hover:shadow-lg"
+              >
+                Register
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-600 font-medium transition hover:bg-blue-50"
+              >
+                Dashboard
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="px-5 py-2.5 rounded-xl bg-red-500 text-white font-medium transition hover:bg-red-600"
+              >
+                Logout
+              </button>
+            </>
+          )}
+
         </div>
 
         {/* Mobile Menu Button */}
@@ -69,13 +110,51 @@ function Navbar() {
               </a>
             ))}
 
-            <button className="w-full py-3 rounded-xl border border-blue-600 text-blue-600 font-medium">
-              Login
-            </button>
+            {!user ? (
+              <>
+                <button
+                  onClick={() => {
+                    navigate("/login");
+                    setIsOpen(false);
+                  }}
+                  className="w-full py-3 rounded-xl border border-blue-600 text-blue-600 font-medium"
+                >
+                  Login
+                </button>
 
-            <button className="w-full py-3 rounded-xl bg-blue-600 text-white font-medium">
-              Register
-            </button>
+                <button
+                  onClick={() => {
+                    navigate("/register");
+                    setIsOpen(false);
+                  }}
+                  className="w-full py-3 rounded-xl bg-blue-600 text-white font-medium"
+                >
+                  Register
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    navigate("/dashboard");
+                    setIsOpen(false);
+                  }}
+                  className="w-full py-3 rounded-xl border border-blue-600 text-blue-600 font-medium"
+                >
+                  Dashboard
+                </button>
+
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsOpen(false);
+                  }}
+                  className="w-full py-3 rounded-xl bg-red-500 text-white font-medium"
+                >
+                  Logout
+                </button>
+              </>
+            )}
 
           </div>
         </div>
