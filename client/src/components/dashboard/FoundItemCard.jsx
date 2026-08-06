@@ -1,48 +1,45 @@
 import { Edit, Trash2, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import noImage from "../../assets/noImage.svg";
-import { deleteLostItem } from "../../services/lostItemService";
 import toast from "react-hot-toast";
+import noImage from "../../assets/noImage.svg";
+import { deleteFoundItem } from "../../services/foundItemService";
 
-function LostItemCard({ item }) {
-    const navigate = useNavigate();
+function FoundItemCard({ item }) {
+  const navigate = useNavigate();
 
-    const handleDelete = async () => {
+  const handleDelete = async () => {
     const confirmDelete = window.confirm(
-        "Are you sure you want to delete this lost item?"
+      "Are you sure you want to delete this found item?"
     );
 
     if (!confirmDelete) return;
 
     try {
-        await deleteLostItem(item._id);
+      await deleteFoundItem(item._id);
 
-        toast.success("Lost item deleted successfully!");
+      toast.success("Found item deleted successfully!");
 
-        setTimeout(() => {
+      setTimeout(() => {
         navigate(0);
-        }, 1000);
+      }, 1000);
     } catch (error) {
-        console.error(error);
-        toast.error("Failed to delete lost item.");
+      console.error(error);
+      toast.error("Failed to delete found item.");
     }
-    };
+  };
+
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
 
       {/* Image */}
       <div className="h-52 bg-slate-100">
         <img
-        src={
-            item.image ||
-            noImage
-        }
-        alt={item.title}
-        className="h-full w-full object-cover"
-        onError={(e) => {
-            e.target.src =
-            noImage;
-        }}
+          src={item.image || noImage}
+          alt={item.title}
+          className="h-full w-full object-cover"
+          onError={(e) => {
+            e.target.src = noImage;
+          }}
         />
       </div>
 
@@ -53,7 +50,7 @@ function LostItemCard({ item }) {
           {item.title}
         </h2>
 
-        <p className="mt-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
+        <p className="mt-2 inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
           {item.category}
         </p>
 
@@ -68,21 +65,21 @@ function LostItemCard({ item }) {
 
         <div className="mt-6 flex justify-between">
 
-        <button
-        onClick={() => navigate(`/lost-items/edit/${item._id}`)}
-        className="flex items-center gap-2 rounded-lg bg-yellow-100 px-4 py-2 text-yellow-700 hover:bg-yellow-200"
-        >
-        <Edit size={18} />
-        Edit
-        </button>
+          <button
+            onClick={() => navigate(`/found-items/edit/${item._id}`)}
+            className="flex items-center gap-2 rounded-lg bg-yellow-100 px-4 py-2 text-yellow-700 hover:bg-yellow-200"
+          >
+            <Edit size={18} />
+            Edit
+          </button>
 
-        <button
+          <button
             onClick={handleDelete}
             className="flex items-center gap-2 rounded-lg bg-red-100 px-4 py-2 text-red-600 hover:bg-red-200"
-        >
-        <Trash2 size={18} />
+          >
+            <Trash2 size={18} />
             Delete
-        </button>
+          </button>
 
         </div>
 
@@ -91,4 +88,4 @@ function LostItemCard({ item }) {
   );
 }
 
-export default LostItemCard;
+export default FoundItemCard;
