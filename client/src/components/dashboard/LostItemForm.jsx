@@ -9,6 +9,8 @@ import {
 function LostItemForm({ mode, item, itemId }) {
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -48,6 +50,8 @@ function LostItemForm({ mode, item, itemId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
       const data = new FormData();
 
@@ -67,17 +71,20 @@ function LostItemForm({ mode, item, itemId }) {
         toast.success("Lost item reported successfully!");
       } else {
         await updateLostItem(itemId, data);
-       toast.success("Lost item updated successfully!");
+        toast.success("Lost item updated successfully!");
       }
 
       navigate("/lost-items");
     } catch (error) {
       console.error(error);
+
       toast.error(
         mode === "create"
-            ? "Failed to report lost item."
-            : "Failed to update lost item."
-        );
+          ? "Failed to report lost item."
+          : "Failed to update lost item."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,6 +110,7 @@ function LostItemForm({ mode, item, itemId }) {
             placeholder="Enter item title"
             className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-600 focus:outline-none"
             required
+            disabled={loading}
           />
         </div>
 
@@ -118,6 +126,7 @@ function LostItemForm({ mode, item, itemId }) {
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-600 focus:outline-none"
             required
+            disabled={loading}
           >
             <option value="">Select Category</option>
             <option value="Wallet">Wallet</option>
@@ -146,6 +155,7 @@ function LostItemForm({ mode, item, itemId }) {
             placeholder="Describe your lost item..."
             className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-600 focus:outline-none"
             required
+            disabled={loading}
           />
         </div>
 
@@ -163,6 +173,7 @@ function LostItemForm({ mode, item, itemId }) {
             placeholder="Where did you lose it?"
             className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-600 focus:outline-none"
             required
+            disabled={loading}
           />
         </div>
 
@@ -179,6 +190,7 @@ function LostItemForm({ mode, item, itemId }) {
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-600 focus:outline-none"
             required
+            disabled={loading}
           />
         </div>
 
@@ -195,6 +207,7 @@ function LostItemForm({ mode, item, itemId }) {
             onChange={handleChange}
             placeholder="Enter reward amount"
             className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-600 focus:outline-none"
+            disabled={loading}
           />
         </div>
 
@@ -209,25 +222,36 @@ function LostItemForm({ mode, item, itemId }) {
             name="image"
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-300 px-4 py-3"
+            disabled={loading}
           />
         </div>
 
         {/* Buttons */}
         <div className="flex justify-end gap-4">
+
           <button
             type="button"
             onClick={() => navigate("/lost-items")}
-            className="rounded-xl border border-slate-300 px-6 py-3 hover:bg-slate-100"
+            disabled={loading}
+            className="rounded-xl border border-slate-300 px-6 py-3 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
 
           <button
             type="submit"
-            className="rounded-xl bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700"
+            disabled={loading}
+            className="rounded-xl bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {mode === "create" ? "Report Item" : "Update Item"}
+            {loading
+              ? mode === "create"
+                ? "Reporting..."
+                : "Updating..."
+              : mode === "create"
+              ? "Report Item"
+              : "Update Item"}
           </button>
+
         </div>
 
       </form>

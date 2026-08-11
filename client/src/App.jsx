@@ -4,6 +4,7 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import Claims from "./pages/Claims/Claims";
 
 // Lost Items
 import LostItems from "./pages/LostItems/LostItems";
@@ -88,6 +89,15 @@ function App() {
         element={
           <ProtectedRoute>
             <EditFoundItem />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/claims"
+        element={
+          <ProtectedRoute>
+            <Claims />
           </ProtectedRoute>
         }
       />
