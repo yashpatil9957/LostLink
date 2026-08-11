@@ -9,6 +9,8 @@ import {
 function FoundItemForm({ mode, item, itemId }) {
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -45,6 +47,8 @@ function FoundItemForm({ mode, item, itemId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
       const data = new FormData();
 
@@ -75,6 +79,8 @@ function FoundItemForm({ mode, item, itemId }) {
           ? "Failed to report found item."
           : "Failed to update found item."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,6 +106,7 @@ function FoundItemForm({ mode, item, itemId }) {
             placeholder="Enter item title"
             className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-600 focus:outline-none"
             required
+            disabled={loading}
           />
         </div>
 
@@ -115,6 +122,7 @@ function FoundItemForm({ mode, item, itemId }) {
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-600 focus:outline-none"
             required
+            disabled={loading}
           >
             <option value="">Select Category</option>
             <option value="Wallet">Wallet</option>
@@ -143,6 +151,7 @@ function FoundItemForm({ mode, item, itemId }) {
             placeholder="Describe the found item..."
             className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-600 focus:outline-none"
             required
+            disabled={loading}
           />
         </div>
 
@@ -160,6 +169,7 @@ function FoundItemForm({ mode, item, itemId }) {
             placeholder="Where did you find it?"
             className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-600 focus:outline-none"
             required
+            disabled={loading}
           />
         </div>
 
@@ -176,13 +186,14 @@ function FoundItemForm({ mode, item, itemId }) {
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-600 focus:outline-none"
             required
+            disabled={loading}
           />
         </div>
 
         {/* Image */}
         <div>
           <label className="mb-2 block font-medium text-slate-700">
-            Upload Image (Optional)
+            Upload New Image (Optional)
           </label>
 
           <input
@@ -190,25 +201,36 @@ function FoundItemForm({ mode, item, itemId }) {
             name="image"
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-300 px-4 py-3"
+            disabled={loading}
           />
         </div>
 
         {/* Buttons */}
         <div className="flex justify-end gap-4">
+
           <button
             type="button"
             onClick={() => navigate("/found-items")}
-            className="rounded-xl border border-slate-300 px-6 py-3 hover:bg-slate-100"
+            disabled={loading}
+            className="rounded-xl border border-slate-300 px-6 py-3 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
 
           <button
             type="submit"
-            className="rounded-xl bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700"
+            disabled={loading}
+            className="rounded-xl bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {mode === "create" ? "Report Item" : "Update Item"}
+            {loading
+              ? mode === "create"
+                ? "Reporting..."
+                : "Updating..."
+              : mode === "create"
+              ? "Report Item"
+              : "Update Item"}
           </button>
+
         </div>
 
       </form>
